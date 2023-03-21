@@ -17,10 +17,12 @@ public class SimpleTreeNode<T>
 class SimpleTree<T>
 {
   public SimpleTreeNode<T> Root; // корень, может быть null
+  public int count;
 
   public SimpleTree(SimpleTreeNode<T> root)
   {
     Root = root;
+    count = 1;
   }
 
   public void AddChild(SimpleTreeNode<T> ParentNode, SimpleTreeNode<T> NewChild)
@@ -29,6 +31,7 @@ class SimpleTree<T>
     if (NewChild != null) {
       NewChild.Parent = ParentNode;
       ParentNode.Children.add(NewChild);
+      count++;
     }
   }
 
@@ -48,6 +51,7 @@ class SimpleTree<T>
     NodeToDelete.NodeValue = null;
     NodeToDelete.Parent = null;
     NodeToDelete.Children.clear();
+    count--;
   }
 
   public List<SimpleTreeNode<T>> GetAllNodes()
@@ -69,24 +73,75 @@ class SimpleTree<T>
   public List<SimpleTreeNode<T>> FindNodesByValue(T val)
   {
     // ваш код поиска узлов по значению
-    return null;
+    List<SimpleTreeNode<T>> list = new LinkedList<>();
+    Queue<SimpleTreeNode<T>> queue = new ArrayDeque<>();
+    SimpleTreeNode<T> node = Root;
+    queue.add(node);
+    while (!queue.isEmpty()) {
+      node = queue.poll();
+      if (node.NodeValue.equals(val)) {
+        list.add(node);
+      }
+      if (!node.Children.isEmpty()) {
+        queue.addAll(node.Children);
+      }
+    }
+    return list;
   }
 
   public void MoveNode(SimpleTreeNode<T> OriginalNode, SimpleTreeNode<T> NewParent)
   {
     // ваш код перемещения узла вместе с его поддеревом --
     // в качестве дочернего для узла NewParent
+    if (OriginalNode != Root) {
+      OriginalNode.Parent.Children.remove(OriginalNode);
+      AddChild(NewParent, OriginalNode);
+    }
   }
 
   public int Count()
   {
     // количество всех узлов в дереве
-    return 0;
+    return count;
   }
 
   public int LeafCount()
   {
     // количество листьев в дереве
-    return 0;
+    Queue<SimpleTreeNode<T>> queue = new ArrayDeque<>();
+    SimpleTreeNode<T> node = Root;
+    int leaves = 0;
+    queue.add(node);
+    while (!queue.isEmpty()) {
+      node = queue.poll();
+      if (!node.Children.isEmpty()) {
+        queue.addAll(node.Children);
+      } else {
+        leaves++;
+      }
+    }
+    return leaves;
+  }
+
+  public List<Integer> LevelsCount() {
+    Queue<SimpleTreeNode<T>> queue = new ArrayDeque<>();
+    List<Integer> levels = new ArrayList<>();
+    SimpleTreeNode<T> node = Root;
+    queue.add(node);
+    while (!queue.isEmpty()) {
+      int lvl = 0;
+      node = queue.peek();
+      while (node.Parent != null) {
+        node = node.Parent;
+        lvl++;
+      }
+      node = queue.poll();
+      levels.add(lvl);
+
+      if (!node.Children.isEmpty()) {
+        queue.addAll(node.Children);
+      }
+    }
+    return levels;
   }
 }
