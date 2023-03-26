@@ -96,12 +96,13 @@ public class BSTNodeTest {
   }
 
   @Test
-  void count() {
+  void countTest() {
     BST<Integer> bst = new BST<>(null);
     assertEquals(0, bst.Count());
     assertTrue(bst.AddKeyValue(8, 8));
     assertEquals(1, bst.Count());
     assertTrue(bst.AddKeyValue(4, 4));
+    assertEquals(2, bst.Count());
     assertTrue(bst.AddKeyValue(12, 12));
     assertTrue(bst.AddKeyValue(2, 2));
     assertEquals(4, bst.Count());
@@ -118,5 +119,27 @@ public class BSTNodeTest {
     assertTrue(bst.DeleteNodeByKey(12));
     assertTrue(bst.DeleteNodeByKey(3));
     assertEquals(5, bst.Count());
+  }
+
+  @Test
+  void count() {
+    BST<Integer> bst = new BST<>(new BSTNode<>(8, 8, null));
+    bst.DeleteNodeByKey(0);
+    assertEquals(1, bst.Count());
+    bst.DeleteNodeByKey(8);
+    assertEquals(0, bst.Count());
+
+    bst.Root = new BSTNode<>(8, 8, null);
+    bst.AddKeyValue(4, 4);
+    assertEquals(2, bst.Count());
+    bst.DeleteNodeByKey(8);
+    assertEquals(1, bst.Count());
+
+    bst.Root = new BSTNode<>(8, 8, null);
+    int[] init = new int[]{4, 12};
+    for (int i : init) {
+      bst.AddKeyValue(i, i);
+    }
+    assertEquals(3, bst.Count());
   }
 }
